@@ -80,16 +80,16 @@ class DawnConan(ConanFile):
             ],
             target="."
         )
-        self.run("git sparse-checkout init --no-cone")
-        self.run("git sparse-checkout set '/*' '!/test'")
-        self.run(f"git checkout chromium/{self.version}")
+        git.run("sparse-checkout init --no-cone")
+        git.run("sparse-checkout set /* !/test")
+        git.checkout(commit=f"chromium/{self.version}")
         rmdir(self, ".git")
         rmdir(self, "test")
 
     def generate(self):
         tc = CMakeToolchain(self)
         tc.cache_variables["CMAKE_POSITION_INDEPENDENT_CODE"]    = "ON"
-        tc.cache_variables["DAWN_BUILD_MONOLITHIC_LIBRARY"]     = "STATIC"
+        tc.cache_variables["DAWN_BUILD_MONOLITHIC_LIBRARY"]     = "SHARED"
         tc.cache_variables["DAWN_ENABLE_INSTALL"]               = "ON"
         tc.cache_variables["DAWN_FETCH_DEPENDENCIES"]           = "ON"
 
