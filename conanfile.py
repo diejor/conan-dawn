@@ -6,7 +6,7 @@ from conan.tools.files import copy, rm, rmdir
 
 class DawnConan(ConanFile):
     name         = "dawn"
-    version      = "7069"
+    version      = "7319"
     license      = "Apache-2.0"
     url          = "https://dawn.googlesource.com/dawn"
     description  = "Dawn is an open-source and cross-platform implementation of the WebGPU standard."
@@ -89,8 +89,7 @@ class DawnConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         tc.cache_variables["CMAKE_POSITION_INDEPENDENT_CODE"]    = "ON"
-        tc.cache_variables["BUILD_SHARED_LIBS"]                 = "OFF"
-        tc.cache_variables["DAWN_BUILD_MONOLITHIC_LIBRARY"]     = "ON"
+        tc.cache_variables["DAWN_BUILD_MONOLITHIC_LIBRARY"]     = "STATIC"
         tc.cache_variables["DAWN_ENABLE_INSTALL"]               = "ON"
         tc.cache_variables["DAWN_FETCH_DEPENDENCIES"]           = "ON"
 
@@ -160,29 +159,6 @@ class DawnConan(ConanFile):
         rm(self, "*.so*", os.path.join(self.package_folder, "lib"))
 
     def package_info(self):
-        # overall package name and alias
-        self.cpp_info.set_property("cmake_file_name", "Dawn")
-        self.cpp_info.set_property("cmake_target_name", "dawn::dawncpp")
-
-        # define individual components
-        components = {
-            "dawn_common":     [],
-            "dawn_native":     ["dawn_common"],
-            "dawn_wgpu_utils": ["dawn_native"],
-            "dawn_proc":       ["dawn_wgpu_utils"],
-            "dawn_wire":       ["dawn_common"],
-            "dawn_platform":   ["dawn_common"],
-            "dawn_glfw":       ["dawn_platform"],
-        }
-
-        for name, requires in components.items():
-            comp = self.cpp_info.components[name]
-            comp.libs = [name]
-            comp.set_property("cmake_target_name", f"dawn::{name}")
-            comp.requires = [f"dawn::{r}" for r in requires]
-
-        # alias pulling them all in
-        alias = self.cpp_info.components["dawncpp"]
-        alias.set_property("cmake_target_name", "dawn::dawncpp")
-        alias.requires = [f"dawn::{n}" for n in components]
+        self.cpp_info.set_property("cmake_target_name", "dawn::webgpu_dawn")
+        self.cpp_info.libs = ["webgpu_dawn"]
 
