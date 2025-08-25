@@ -2,7 +2,7 @@ import os
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
 from conan.tools.scm import Git
-from conan.tools.files import copy, rm, rmdir
+from conan.tools.files import copy, rm, rmdir, collect_libs
 
 class DawnConan(ConanFile):
     name         = "dawn"
@@ -76,18 +76,15 @@ class DawnConan(ConanFile):
             args=[
                 "--branch", f"chromium/{self.version}",
                 "--single-branch", "--filter=blob:none",
-                "--sparse", "--no-checkout", "--depth=1"
+                "--depth=1"
             ],
             target="."
         )
-        git.run("sparse-checkout init --no-cone")
-        git.run("sparse-checkout set /* !/test")
         git.checkout(commit=f"chromium/{self.version}")
-        rmdir(self, ".git")
         rmdir(self, "test")
 
     def generate(self):
-        tc = CMakeToolchain(self)
+        tc = CMakeToolchain(self, generator="Ninja")
         tc.cache_variables["CMAKE_POSITION_INDEPENDENT_CODE"]    = "ON"
         tc.cache_variables["DAWN_BUILD_MONOLITHIC_LIBRARY"]     = "SHARED"
         tc.cache_variables["DAWN_ENABLE_INSTALL"]               = "ON"
@@ -151,14 +148,7 @@ class DawnConan(ConanFile):
         cmake = CMake(self)
         cmake.install()
 
-        cfg = str(self.settings.build_type)
-        src_dir = os.path.join(self.build_folder, "build", cfg, "src", "dawn")
-        copy(self, "libdawn_*.a", src_dir, os.path.join(self.package_folder, "lib"), keep_path=False)
-
-        # remove the shared plugin
-        rm(self, "*.so*", os.path.join(self.package_folder, "lib"))
-
     def package_info(self):
         self.cpp_info.set_property("cmake_target_name", "dawn::webgpu_dawn")
-        self.cpp_info.libs = ["webgpu_dawn"]
+        self.cpp_info.libs = collect_libs(self)
 
