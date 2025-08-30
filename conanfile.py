@@ -6,7 +6,7 @@ from conan.tools.files import copy, rm, rmdir, collect_libs
 
 class DawnConan(ConanFile):
     name         = "dawn"
-    version      = "7380"
+    version      = "7187"
     license      = "Apache-2.0"
     url          = "https://dawn.googlesource.com/dawn"
     description  = "Dawn is an open-source and cross-platform implementation of the WebGPU standard."
