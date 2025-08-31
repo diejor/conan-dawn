@@ -6,7 +6,7 @@ from conan.tools.files import copy, rm, rmdir, collect_libs
 
 class DawnConan(ConanFile):
     name         = "dawn"
-    version      = "7187"
+    version      = "7319"
     license      = "Apache-2.0"
     url          = "https://dawn.googlesource.com/dawn"
     description  = "Dawn is an open-source and cross-platform implementation of the WebGPU standard."
@@ -14,8 +14,6 @@ class DawnConan(ConanFile):
 
     settings     = "os", "compiler", "build_type", "arch"
     options      = {
-        "shared":            [True, False],
-        "fPIC":              [True, False],
         # backends
         "force_vulkan":     [True, False, None],
         "force_d3d12":      [True, False, None],
@@ -35,8 +33,6 @@ class DawnConan(ConanFile):
         "force_glfw":       [True, False, None],
     }
     default_options = {
-        "shared":            False,
-        "fPIC":              True,
         "force_vulkan":      None,
         "force_d3d12":       None,
         "force_metal":       None,
@@ -62,10 +58,6 @@ class DawnConan(ConanFile):
             if self.options.force_metal is None:
                 self.options.force_metal = True
 
-    def configure(self):
-        if self.options.shared:
-            del self.options.fPIC
-
     def layout(self):
         cmake_layout(self)
 
@@ -85,10 +77,10 @@ class DawnConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self, generator="Ninja")
-        tc.cache_variables["CMAKE_POSITION_INDEPENDENT_CODE"]    = "ON"
         tc.cache_variables["DAWN_BUILD_MONOLITHIC_LIBRARY"]     = "SHARED"
         tc.cache_variables["DAWN_ENABLE_INSTALL"]               = "ON"
         tc.cache_variables["DAWN_FETCH_DEPENDENCIES"]           = "ON"
+        tc.cache_variables["BUILD_SHARED_LIBS"]                 = "OFF"
 
         def _map(opt, var):
             val = getattr(self.options, opt)
