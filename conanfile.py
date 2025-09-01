@@ -127,7 +127,7 @@ class DawnConan(ConanFile):
             "DAWN_BUILD_SAMPLES",
             "DAWN_BUILD_TESTS",
         ):
-            tc.cache_variables[f] = "OFF"
+        tc.cache_variables[f] = "OFF"
 
         tc.generate()
 
