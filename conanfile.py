@@ -6,7 +6,7 @@ from conan.tools.files import copy, rm, rmdir, collect_libs
 
 class DawnConan(ConanFile):
     name         = "dawn"
-    version      = "7319"
+    version      = "7390"
     license      = "Apache-2.0"
     url          = "https://dawn.googlesource.com/dawn"
     description  = "Dawn is an open-source and cross-platform implementation of the WebGPU standard."
@@ -63,17 +63,14 @@ class DawnConan(ConanFile):
 
     def source(self):
         git = Git(self)
-        git.clone(
-            url=self.url,
-            args=[
-                "--branch", f"chromium/{self.version}",
-                "--single-branch", "--filter=blob:none",
-                "--depth=1"
-            ],
-            target="."
-        )
-        git.checkout(commit=f"chromium/{self.version}")
-        rmdir(self, "test")
+        url = self.url
+        branch = f"chromium/{self.version}"
+        git.clone(url=url,
+                  args=["--branch", branch,
+                        "--single-branch",
+                        "--depth=1"],
+                  target=".")
+        git.checkout(commit=branch)
 
     def generate(self):
         tc = CMakeToolchain(self, generator="Ninja")
@@ -127,7 +124,7 @@ class DawnConan(ConanFile):
             "DAWN_BUILD_SAMPLES",
             "DAWN_BUILD_TESTS",
         ):
-        tc.cache_variables[f] = "OFF"
+            tc.cache_variables[f] = "OFF"
 
         tc.generate()
 
