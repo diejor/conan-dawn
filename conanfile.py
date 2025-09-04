@@ -84,8 +84,9 @@ class DawnConan(ConanFile):
 
         def _map(opt, var):
             val = self.options.get_safe(opt)
-            if val is True:
-                tc.cache_variables[var] = "ON"
+            if val is None:
+                return
+            tc.cache_variables[var] = "ON" if val else "OFF"
 
         # backends
         for opt, var in [
