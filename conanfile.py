@@ -91,8 +91,6 @@ class DawnConan(ConanFile):
                 tc.cache_variables[var] = "ON"
             elif val is False:
                 tc.cache_variables[var] = "OFF"
-            else:
-                 self.output.warn(f"Unexpected value for {opt}: {val}. CMake variable not modified.")
 
         # backends
         for opt, var in [
@@ -140,12 +138,6 @@ class DawnConan(ConanFile):
         tc.generate()
 
     def build(self):
-        # If Windows + not using DXC, warn about the FXC DLL requirement
-        if str(self.settings.os) == "Windows" and not bool(self.options.force_dxc):
-            self.output.warn(
-                "Building Dawn without DXC on Windows. "
-                "At runtime, you'll need d3dcompiler_47.dll available in PATH or next to your app."
-            )
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
