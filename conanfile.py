@@ -15,24 +15,24 @@ class DawnConan(ConanFile):
     settings     = "os", "compiler", "build_type", "arch"
     options      = {
         # backends
-        "force_vulkan":     [True, False],
-        "force_d3d12":      [True, False],
-        "force_metal":      [True, False],
-        "force_d3d11":      [True, False],
-        "force_null":       [True, False],
-        "force_desktop_gl": [True, False],
-        "force_opengles":   [True, False],
+        "force_vulkan":     [True, False, None],
+        "force_d3d12":      [True, False, None],
+        "force_metal":      [True, False, None],
+        "force_d3d11":      [True, False, None],
+        "force_null":       [True, False, None],
+        "force_desktop_gl": [True, False, None],
+        "force_opengles":   [True, False, None],
         # sanitizers
-        "force_asan":       [True, False],
-        "force_tsan":       [True, False],
-        "force_msan":       [True, False],
-        "force_ubsan":      [True, False],
+        "force_asan":       [True, False, None],
+        "force_tsan":       [True, False, None],
+        "force_msan":       [True, False, None],
+        "force_ubsan":      [True, False, None],
         # windowing
-        "force_wayland":    [True, False],
-        "force_x11":        [True, False],
-        "force_glfw":       [True, False],
+        "force_wayland":    [True, False, None],
+        "force_x11":        [True, False, None],
+        "force_glfw":       [True, False, None],
         # DXC toggle to avoid FXC (d3dcompiler_47.dll) dependency on Windows
-        "force_dxc":        [True, False],
+        "force_dxc":        [True, False, None],
     }
 
     generators = "CMakeDeps"
@@ -70,9 +70,9 @@ class DawnConan(ConanFile):
        
             if val is None:
                 return
-            if val is True:
+            elif val:
                 tc.cache_variables[var] = "ON"
-            elif val is False:
+            else:
                 tc.cache_variables[var] = "OFF"
 
         # backends
