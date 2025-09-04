@@ -15,41 +15,24 @@ class DawnConan(ConanFile):
     settings     = "os", "compiler", "build_type", "arch"
     options      = {
         # backends
-        "force_vulkan":     [True, False, None],
-        "force_d3d12":      [True, False, None],
-        "force_metal":      [True, False, None],
-        "force_d3d11":      [True, False, None],
-        "force_null":       [True, False, None],
-        "force_desktop_gl": [True, False, None],
-        "force_opengles":   [True, False, None],
+        "force_vulkan":     [True, False],
+        "force_d3d12":      [True, False],
+        "force_metal":      [True, False],
+        "force_d3d11":      [True, False],
+        "force_null":       [True, False],
+        "force_desktop_gl": [True, False],
+        "force_opengles":   [True, False],
         # sanitizers
-        "force_asan":       [True, False, None],
-        "force_tsan":       [True, False, None],
-        "force_msan":       [True, False, None],
-        "force_ubsan":      [True, False, None],
+        "force_asan":       [True, False],
+        "force_tsan":       [True, False],
+        "force_msan":       [True, False],
+        "force_ubsan":      [True, False],
         # windowing
-        "force_wayland":    [True, False, None],
-        "force_x11":        [True, False, None],
-        "force_glfw":       [True, False, None],
+        "force_wayland":    [True, False],
+        "force_x11":        [True, False],
+        "force_glfw":       [True, False],
         # DXC toggle to avoid FXC (d3dcompiler_47.dll) dependency on Windows
-        "force_dxc":        [True, False, None],
-    }
-    default_options = {
-        "force_vulkan":      None,
-        "force_d3d12":       None,
-        "force_metal":       None,
-        "force_d3d11":       None,
-        "force_null":        None,
-        "force_desktop_gl":  None,
-        "force_opengles":    None,
-        "force_asan":        None,
-        "force_tsan":        None,
-        "force_msan":        None,
-        "force_ubsan":       None,
-        "force_wayland":     None,
-        "force_x11":         None,
-        "force_glfw":        None,
-        "force_dxc":         None,
+        "force_dxc":        [True, False],
     }
 
     generators = "CMakeDeps"
