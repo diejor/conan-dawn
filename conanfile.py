@@ -84,9 +84,15 @@ class DawnConan(ConanFile):
 
         def _map(opt, var):
             val = self.options.get_safe(opt, None)
+       
             if val is None:
                 return
-            tc.cache_variables[var] = "ON" if val else "OFF"
+            if val is True:
+                tc.cache_variables[var] = "ON"
+            elif val is False:
+                tc.cache_variables[var] = "OFF"
+            else:
+                 self.output.warn(f"Unexpected value for {opt}: {val}. CMake variable not modified.")
 
         # backends
         for opt, var in [
