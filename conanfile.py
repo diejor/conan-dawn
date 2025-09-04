@@ -82,7 +82,7 @@ class DawnConan(ConanFile):
         tc.cache_variables["DAWN_FETCH_DEPENDENCIES"]           = "ON"
         tc.cache_variables["BUILD_SHARED_LIBS"]                 = "OFF"
 
-        def _map_on(opt, var):
+        def _map(opt, var):
             val = self.options.get_safe(opt)
             if val is True:
                 tc.cache_variables[var] = "ON"
