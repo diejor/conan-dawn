@@ -31,6 +31,8 @@ class DawnConan(ConanFile):
         "force_wayland":    [True, False, None],
         "force_x11":        [True, False, None],
         "force_glfw":       [True, False, None],
+        # DXC toggle to avoid FXC (d3dcompiler_47.dll) dependency on Windows
+        "force_dxc":        [True, False, None],
     }
     default_options = {
         "force_vulkan":      None,
@@ -47,6 +49,7 @@ class DawnConan(ConanFile):
         "force_wayland":     None,
         "force_x11":         None,
         "force_glfw":        None,
+        "force_dxc":         None,
     }
 
     generators = "CMakeDeps"
@@ -113,7 +116,10 @@ class DawnConan(ConanFile):
         ]:
             _map(opt, var)
 
-        # disable tests/tools/samples
+        # DXC (avoids runtime load of d3dcompiler_47.dll by building & using DXC)
+        _map("force_dxc", "DAWN_USE_BUILT_DXC")
+
+        # disable tests/tools/samples to keep the package lean
         for f in (
             "TINT_BUILD_SPV_READER",
             "TINT_BUILD_CMD_TOOLS",
@@ -127,6 +133,12 @@ class DawnConan(ConanFile):
         tc.generate()
 
     def build(self):
+        # If Windows + not using DXC, warn about the FXC DLL requirement
+        if str(self.settings.os) == "Windows" and not bool(self.options.force_dxc):
+            self.output.warn(
+                "Building Dawn without DXC on Windows. "
+                "At runtime, you'll need d3dcompiler_47.dll available in PATH or next to your app."
+            )
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
@@ -138,4 +150,3 @@ class DawnConan(ConanFile):
     def package_info(self):
         self.cpp_info.set_property("cmake_target_name", "dawn::webgpu_dawn")
         self.cpp_info.libs = collect_libs(self)
-
