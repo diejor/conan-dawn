@@ -33,6 +33,7 @@ class DawnConan(ConanFile):
         "force_glfw":       [True, False, None],
         # DXC toggle to avoid FXC (d3dcompiler_47.dll) dependency on Windows
         "force_dxc":        [True, False, None],
+        "force_system_component_load": [True, False, None],
     }
 
     generators = "CMakeDeps"
@@ -104,8 +105,8 @@ class DawnConan(ConanFile):
         ]:
             _map(opt, var)
 
-        # DXC (avoids runtime load of d3dcompiler_47.dll by building & using DXC)
         _map("force_dxc", "DAWN_USE_BUILT_DXC")
+        _map("force_system_component_load", "DAWN_FORCE_SYSTEM_COMPONENT_LOAD")
 
         # disable tests/tools/samples to keep the package lean
         for f in (
