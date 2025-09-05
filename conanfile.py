@@ -61,9 +61,9 @@ class DawnConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self, generator="Ninja")
         tc.cache_variables["DAWN_BUILD_MONOLITHIC_LIBRARY"]     = "SHARED"
+        tc.cache_variables["BUILD_SHARED_LIBS"]                 = "OFF"
         tc.cache_variables["DAWN_ENABLE_INSTALL"]               = "ON"
         tc.cache_variables["DAWN_FETCH_DEPENDENCIES"]           = "ON"
-        tc.cache_variables["BUILD_SHARED_LIBS"]                 = "OFF"
 
         def _map(opt, var):
             val = self.options.get_safe(opt)
@@ -115,6 +115,8 @@ class DawnConan(ConanFile):
             "TINT_BUILD_IR_BINARY",
             "DAWN_BUILD_SAMPLES",
             "DAWN_BUILD_TESTS",
+            "DAWN_BUILD_PROTOBUF",
+            "TINT_BUILD_IR_BINARY",
         ):
             tc.cache_variables[f] = "OFF"
 
