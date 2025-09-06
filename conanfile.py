@@ -45,6 +45,9 @@ class DawnConan(ConanFile):
             if self.options.force_metal is None:
                 self.options.force_metal = True
 
+        if self.settings.os == "Windows":
+            self.options.force_system_component_load = True
+
     def layout(self):
         cmake_layout(self)
 
