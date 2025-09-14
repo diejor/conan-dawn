@@ -13,6 +13,7 @@ class DawnConan(ConanFile):
     topics       = ("conan", "dawn", "webgpu", "graphics", "gpu")
 
     settings     = "os", "compiler", "build_type", "arch"
+    no_copy_source = True
     options      = {
         # backends
         "force_vulkan":     [True, False, None],
@@ -128,7 +129,7 @@ class DawnConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure(build_script_folder=self.source_folder)
         cmake.build()
 
     def package(self):
